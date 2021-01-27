@@ -1,9 +1,13 @@
 import produce from 'immer';
 
 export const initialState = {
-  myInfoLoading: false,
-  myInfoDone: false,
-  myInfoError: null,
+  loadUserLoading: false, // 유저 정보 가져오기 시도중
+  loadUserDone: false,
+  loadUserError: null,
+
+  loadMyInfoLoading: false,
+  loadMyInfoDone: false,
+  loadMyInfoError: null,
 
   followLoading: false, // 팔로우 시도중
   followDone: false,
@@ -38,9 +42,12 @@ export const initialState = {
   removeFollowerError: null,
 
   me: null,
-  signUpData: {},
-  loginData: {},
+  userInfo: null,
 };
+
+export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
+export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
 
 export const LOAD_FOLLOWINGS_REQUEST = 'LOAD_FOLLOWINGS_REQUEST';
 export const LOAD_FOLLOWINGS_SUCCESS = 'LOAD_FOLLOWINGS_SUCCESS';
@@ -86,8 +93,6 @@ export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
 export const loginRequestAction = data => ({
-  // ===========2.Get from login + SAGA Same Time
-  // Arrow 펑션은 뭐 return 이 필요없는듯
   type: LOG_IN_REQUEST,
   data,
 });
@@ -98,19 +103,33 @@ export const logoutRequestAction = () => ({
 const reducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
+      case LOAD_USER_REQUEST:
+        draft.loadUserLoading = true;
+        draft.loadUserError = null;
+        draft.loadUserDone = false;
+        break;
+      case LOAD_USER_SUCCESS:
+        draft.loadUserLoading = false;
+        draft.userInfo = action.data;
+        draft.loadUserDone = true;
+        break;
+      case LOAD_USER_FAILURE:
+        draft.loadUserLoading = false;
+        draft.loadUserError = action.error;
+        break;
       case LOAD_MY_INFO_REQUEST:
-        draft.myInfoLoading = true;
-        draft.myInfoError = null;
-        draft.myInfoDone = false;
+        draft.loadMyInfoLoading = true;
+        draft.loadMyInfoError = null;
+        draft.loadMyInfoDone = false;
         break;
       case LOAD_MY_INFO_SUCCESS:
-        draft.myInfoLoading = false;
+        draft.loadMyInfoLoading = false;
         draft.me = action.data;
-        draft.myInfoDone = true;
+        draft.loadMyInfoDone = true;
         break;
       case LOAD_MY_INFO_FAILURE:
-        draft.myInfoLoading = false;
-        draft.myInfoError = action.error;
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoError = action.error;
         break;
       case FOLLOW_REQUEST:
         draft.followLoading = true;

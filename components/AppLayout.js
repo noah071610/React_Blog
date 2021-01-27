@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import propTypes from 'prop-types';
 import Link from 'next/link';
 import { Menu, Input, Row, Col } from 'antd';
 import styled, { createGlobalStyle } from 'styled-components';
 import { useSelector } from 'react-redux';
+import Router from 'next/router';
 
 import UserProfile from './UserProfile';
 import LoginForm from './LoginForm';
+import useInput from '../hooks/useInput';
 
 const Global = createGlobalStyle`
   .ant-row {
@@ -31,10 +33,12 @@ const SearchInput = styled(Input.Search)`
 // <SearchInput enterButton style={style}/>
 
 function AppLayout({ children }) {
+  const [searchInput, onChangeSearchInput] = useInput('');
   const { me } = useSelector(state => state.user);
   // redux로 뭉쳐놨으니 setState 와 props 값 삭제 ㄱㄴ
   // state 라고 써져있으나 사실상 reducer 불러오는거
 
+  const onSearch = useCallback(() => Router.push(`/hashtag/${searchInput}`), [searchInput]);
   return (
     <div>
       <Global />
@@ -50,7 +54,12 @@ function AppLayout({ children }) {
           </Link>
         </Menu.Item>
         <Menu.Item>
-          <SearchInput enterButton />
+          <SearchInput
+            enterButton
+            value={searchInput}
+            onChange={onChangeSearchInput}
+            onSearch={onSearch}
+          />
         </Menu.Item>
         <Menu.Item>
           <Link href="/signup">

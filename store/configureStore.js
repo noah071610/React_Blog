@@ -7,16 +7,15 @@ import rootSaga from '../sagas'; // SAGA
 
 import reducer from '../reducers';
 
-const configureStore = context => {
-  console.log(context);
-  const sagaMiddleware = createSagaMiddleware(); // Before X
+const configureStore = () => {
+  const sagaMiddleware = createSagaMiddleware();
   const middlewares = [sagaMiddleware]; // Before const middlewares = [];
   const enhancer =
     process.env.NODE_ENV === 'production'
       ? compose(applyMiddleware(...middlewares))
       : composeWithDevTools(applyMiddleware(...middlewares)); // enhancer는 redux server 기능 향상, 배포용일때는 compose로 바꾸자
   const store = createStore(reducer, enhancer);
-  store.sagaTask = sagaMiddleware.run(rootSaga);
+  store.sagaTask = sagaMiddleware.run(rootSaga); // 서버 사이드 렌더링을 위해서
   return store;
 };
 

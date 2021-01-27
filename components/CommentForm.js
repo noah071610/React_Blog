@@ -21,6 +21,7 @@ function CommentForm({ post }) {
     dispatch({
       type: ADD_COMMENT_REQUEST,
       data: { content: commentText, postId: post.id, userId: id },
+      // props 로 가져온 post 와 const로 지정한 me.id
     });
   }, [commentText, id]);
   return (

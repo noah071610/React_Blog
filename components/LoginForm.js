@@ -28,7 +28,7 @@ function LoginForm() {
 
   const onSubmitForm = useCallback(
     () => {
-      console.log(`Login Success ${email},${password}`);
+      console.log(`Login Success`);
       dispatch(loginRequestAction({ email, password }));
     }, //= ==================1. Go to SAGA and REDUCER SAME TINE
     [email, password],
@@ -37,7 +37,7 @@ function LoginForm() {
     <FormWrapper onFinish={onSubmitForm}>
       <div>
         <label htmlFor="user-email">E-mail</label>
-        <Input name="user-email" type={email} value={email} onChange={onChangeEmail} required />
+        <Input name="user-email" type="email" value={email} onChange={onChangeEmail} required />
       </div>
       <div>
         <label htmlFor="user-password">Password</label>

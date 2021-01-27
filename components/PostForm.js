@@ -18,7 +18,7 @@ const PostForm = () => {
   }, [addPostDone]);
 
   const onClickImageUpload = useCallback(() => {
-    imageInput.current.click();
+    imageInput.current.click(); // 내장 api
   }, [imageInput.current]);
 
   useEffect(() => {
@@ -33,6 +33,7 @@ const PostForm = () => {
     }
     const formData = new FormData(); // image 형식에서는 이렇게 폼데이터를 만들어 사용
     imagePaths.forEach(p => {
+      // new FormData에 추가하는 과정
       formData.append('image', p); // req.body.image
     });
     formData.append('content', text); // req.body.content
@@ -43,19 +44,20 @@ const PostForm = () => {
   }, [text, imagePaths]);
 
   const onChangeImages = useCallback(e => {
-    console.log('images', e.target.files);
+    console.log('files on the list', e.target.files);
     const imageFormData = new FormData();
-    [].forEach.call(e.target.files, f => {
-      imageFormData.append('image', f);
-    });
+    [].forEach.call(e.target.files, file => {
+      imageFormData.append('image', file);
+    }); // e.target.files 이 불러와져서 [] 으로 감. 즉 f가 됨
     dispatch({
       type: UPLOAD_IMAGES_REQUEST,
       data: imageFormData,
-    });
+    }); // 미리 이미지를 서버에 보내는 행위
   }, []);
 
   const onRemoveImage = useCallback(
     index => () => {
+      // 고차함수 모형, 즉 콜백이 두개 이럴땐 첫째 둘째 순서대로 애로우 2개
       dispatch({
         type: REMOVE_IMAGE,
         data: index,
@@ -70,7 +72,7 @@ const PostForm = () => {
         value={text}
         onChange={onChangeText}
         maxLength={140}
-        placeholder="어떤 신기한 일이 있었나요?"
+        placeholder="How you've been?"
       />
       <div>
         <input
@@ -91,7 +93,8 @@ const PostForm = () => {
           <div key={v} style={{ display: 'inline-block' }}>
             <img src={`http://localhost:3065/${v}`} style={{ width: '200px' }} alt={v} />
             <div>
-              <Button onClick={onRemoveImage(i)}>제거</Button>
+              <Button onClick={onRemoveImage(i)}>DELETE</Button>
+              {/* 고차함수 */}
             </div>
           </div>
         ))}

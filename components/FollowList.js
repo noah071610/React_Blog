@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { UNFOLLOW_REQUEST, REMOVE_FOLLOWER_REQUEST } from '../reducers/user';
 
-const FollowList = ({ header, data }) => {
+const FollowList = ({ header, data, onClickMore, loading }) => {
   const dispatch = useDispatch();
   const onCancel = id => () => {
     // 반복문 안에서는 이렇게 고차함수로 데이터를 넘겨줌 ( 해당값에 맞는 id를 찾는 방법)
@@ -30,7 +30,9 @@ const FollowList = ({ header, data }) => {
       header={<div>{header}</div>}
       loadMore={
         <div style={{ textAlign: 'center', margin: '10px 0' }}>
-          <Button>더 보기</Button>
+          <Button onClick={onClickMore} loading={loading}>
+            More
+          </Button>
         </div>
       }
       bordered
@@ -49,6 +51,8 @@ const FollowList = ({ header, data }) => {
 FollowList.propTypes = {
   header: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
+  onClickMore: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default FollowList;
